@@ -27,6 +27,11 @@ const (
 	argServiceName    = "service"
 	argLocalPort      = "local_port"
 	argRemotePort     = "remote_port"
+	argUseTLS         = "use_tls"
+	argCaCert         = "ca_cert"
+	argClientCert     = "client_cert"
+	argClientKey      = "client_key"
+	argInsecureTLS    = "use_insecure_tls"
 )
 
 func init() {
@@ -73,13 +78,22 @@ type kubeConn struct {
 	kubeClient  *kubernetes.Clientset
 }
 
+type tlsConfig struct {
+	caCert     string
+	clientCert string
+	clientKey  string
+	insecure   bool
+}
+
 type apiClient struct {
 	// Add whatever fields, client or connection info, etc. here
 	// you would need to setup to communicate with the upstream
 	// API.
-	client   *api.Client
-	url      string
-	kubeConn kubeConn
+	client    *api.Client
+	url       string
+	kubeConn  kubeConn
+	tlsAdded  bool
+	tlsConfig tlsConfig
 }
 
 func providerSchema() map[string]*schema.Schema {
@@ -135,6 +149,36 @@ func providerSchema() map[string]*schema.Schema {
 						Description: "Remote service port to forward",
 						Default:     "8200",
 					},
+					argUseTLS: {
+						Type:        schema.TypeBool,
+						Optional:    true,
+						Description: "Use TLS when proxying via kubectl proxy",
+						Default:     false,
+					},
+					argCaCert: {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "CA to use when proxying via kubectl proxy",
+						Default:     false,
+					},
+					argClientCert: {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "Client Cert to use when proxying via kubectl proxy",
+						Default:     false,
+					},
+					argClientKey: {
+						Type:        schema.TypeString,
+						Optional:    true,
+						Description: "Client Key to use when proxying via kubectl proxy",
+						Default:     false,
+					},
+					argInsecureTLS: {
+						Type:        schema.TypeBool,
+						Optional:    true,
+						Description: "Validate the TLS connection between the provider and vault?",
+						Default:     true,
+					},
 				},
 			},
 		},
@@ -186,15 +230,24 @@ func configure(version string, p *schema.Provider) func(context.Context, *schema
 
 			a.kubeConn.localPort = kubeConn[argLocalPort].(string)
 			a.kubeConn.remotePort = kubeConn[argRemotePort].(string)
-
-			a.url = fmt.Sprintf("http://localhost:%s", a.kubeConn.localPort)
+			if kubeConn[argUseTLS].(bool) {
+				a.url = fmt.Sprintf("https://localhost:%s", a.kubeConn.localPort)
+				a.tlsConfig = tlsConfig{caCert: "", clientCert: "", clientKey: "", insecure: false}
+				a.tlsAdded = true
+			} else {
+				a.url = fmt.Sprintf("http://localhost:%s", a.kubeConn.localPort)
+				a.tlsAdded = false
+			}
 		} else {
 			if u := d.Get(argVaultAddr).(string); u != "" {
 				a.url = u
+				a.tlsAdded = false
 			} else if u := d.Get(argVaultUrl).(string); u != "" {
 				a.url = u
+				a.tlsAdded = false
 			} else {
 				a.url = os.Getenv(envVaultAddr)
+				a.tlsAdded = false
 			}
 		}
 
@@ -202,7 +255,12 @@ func configure(version string, p *schema.Provider) func(context.Context, *schema
 			return nil, diag.Errorf("argument '%s' is required, or set VAULT_ADDR environment variable", argVaultUrl)
 		}
 
-		if c, err := api.NewClient(&api.Config{Address: a.url}); err != nil {
+		var vaultConfig = api.Config{Address: a.url}
+		if a.tlsAdded {
+			api.Config.ConfigureTLS(vaultConfig, &api.TLSConfig{CACert: a.tlsConfig.caCert, ClientCert: a.tlsConfig.clientCert, ClientKey: a.tlsConfig.clientKey, Insecure: a.tlsConfig.insecure})
+		}
+
+		if c, err := api.NewClient(&vaultConfig); err != nil {
 			logError("failed to create Vault API client: %v", err)
 			return nil, diag.FromErr(err)
 		} else {
