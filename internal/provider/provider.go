@@ -176,7 +176,7 @@ func providerSchema() map[string]*schema.Schema {
 					argInsecureTLS: {
 						Type:        schema.TypeBool,
 						Optional:    true,
-						Description: "Validate the TLS connection between the provider and vault?",
+						Description: "Validate the TLS connection between the provider and vault",
 						Default:     true,
 					},
 				},
