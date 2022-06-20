@@ -51,9 +51,9 @@ jobs:
       matrix:
         # list whatever Terraform versions here you would like to support
         terraform:
-          - '0.14.7'
           - '0.15.0'
           - '1.0.5'
+          - '1.2.3'
     steps:
 
     - name: Set up Vault
