@@ -232,7 +232,7 @@ func configure(version string, p *schema.Provider) func(context.Context, *schema
 			a.kubeConn.remotePort = kubeConn[argRemotePort].(string)
 			if kubeConn[argUseTLS].(bool) {
 				a.url = fmt.Sprintf("https://localhost:%s", a.kubeConn.localPort)
-				a.tlsConfig = tlsConfig{caCert: "", clientCert: "", clientKey: "", insecure: false}
+				a.tlsConfig = tlsConfig{caCert: kubeConn[argCaCert].(string), clientCert: kubeConn[argClientCert].(string), clientKey: kubeConn[argClientKey].(string), insecure: kubeConn[argInsecureTLS].(bool)}
 				a.tlsAdded = true
 			} else {
 				a.url = fmt.Sprintf("http://localhost:%s", a.kubeConn.localPort)
