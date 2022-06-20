@@ -257,7 +257,16 @@ func configure(version string, p *schema.Provider) func(context.Context, *schema
 
 		var vaultConfig = api.Config{Address: a.url}
 		if a.tlsAdded {
-			api.Config.ConfigureTLS(vaultConfig, &api.TLSConfig{CACert: a.tlsConfig.caCert, ClientCert: a.tlsConfig.clientCert, ClientKey: a.tlsConfig.clientKey, Insecure: a.tlsConfig.insecure})
+			err := vaultConfig.ConfigureTLS(&api.TLSConfig{
+				CACert:     a.tlsConfig.caCert,
+				ClientCert: a.tlsConfig.clientCert,
+				ClientKey:  a.tlsConfig.clientKey,
+				Insecure:   a.tlsConfig.insecure,
+			})
+			if err != nil {
+				logError("failed to configure Vault API client with TLS: %v", err)
+				return nil, diag.FromErr(err)
+			}
 		}
 
 		if c, err := api.NewClient(&vaultConfig); err != nil {
