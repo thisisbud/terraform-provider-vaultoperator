@@ -3,15 +3,16 @@ package provider
 import (
 	"context"
 	"fmt"
+	"log"
+	"os"
+	"strings"
+
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/vault/api"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
-	"log"
-	"os"
-	"strings"
 )
 
 const (
@@ -69,7 +70,6 @@ func New(version string) func() *schema.Provider {
 }
 
 type kubeConn struct {
-	configPath  string
 	nameSpace   string
 	serviceName string
 	localPort   string

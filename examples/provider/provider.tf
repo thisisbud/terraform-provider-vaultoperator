@@ -2,7 +2,7 @@ terraform {
   required_providers {
     vaultoperator = {
       version = "0.2.0"
-      source  = "rickardgranberg/vaultoperator"
+      source  = "josh-thisisbud/vaultoperator"
     }
   }
 }
