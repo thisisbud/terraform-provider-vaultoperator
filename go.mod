@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/hashicorp/terraform-plugin-docs v0.5.0
-	github.com/hashicorp/terraform-plugin-sdk/v2 v2.33.0
+	github.com/hashicorp/terraform-plugin-sdk/v2 v2.24.1
 	github.com/hashicorp/vault/api v1.7.2
 	k8s.io/api v0.26.2
 	k8s.io/apimachinery v0.26.2
@@ -62,7 +62,7 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.19.1 // indirect
 	github.com/hashicorp/logutils v1.0.0 // indirect
-	github.com/hashicorp/terraform-exec v0.20.0 // indirect
+	github.com/hashicorp/terraform-exec v0.17.3 // indirect
 	github.com/hashicorp/terraform-json v0.21.0 // indirect
 	github.com/hashicorp/terraform-plugin-go v0.22.0 // indirect
 	github.com/hashicorp/terraform-plugin-log v0.9.0 // indirect
@@ -111,7 +111,7 @@ require (
 	google.golang.org/appengine v1.6.8 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231106174013-bbf56f31fb17 // indirect
 	google.golang.org/grpc v1.61.1 // indirect
-	google.golang.org/protobuf v1.32.0 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
