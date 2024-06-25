@@ -3,7 +3,7 @@ module github.com/rickardgranberg/terraform-provider-vaultoperator
 go 1.18
 
 require (
-	github.com/hashicorp/terraform-plugin-docs v0.19.3
+	github.com/hashicorp/terraform-plugin-docs v0.19.4
 	github.com/hashicorp/terraform-plugin-sdk/v2 v2.34.0
 	github.com/hashicorp/vault/api v1.14.0
 	k8s.io/api v0.26.2
