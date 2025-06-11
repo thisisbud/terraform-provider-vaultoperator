@@ -1,6 +1,6 @@
 module github.com/rickardgranberg/terraform-provider-vaultoperator
 
-go 1.18
+go 1.23.0
 
 require (
 	github.com/hashicorp/terraform-plugin-docs v0.20.1
@@ -28,7 +28,7 @@ require (
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/bmatcuk/doublestar/v4 v4.7.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
-	github.com/cloudflare/circl v1.3.7 // indirect
+	github.com/cloudflare/circl v1.6.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/emicklei/go-restful/v3 v3.8.0 // indirect
 	github.com/fatih/color v1.16.0 // indirect
